@@ -1,0 +1,7 @@
+SampleID	Description	Project
+Sample1	A57	Enrichment
+Sample2	B66	Enrichment
+Sample3	E75	Enrichment
+Sample4	Rey_t1	Bioreactor
+Sample5	Rey_t2	Bioreactor
+Sample6	Rey_t3	Bioreactor

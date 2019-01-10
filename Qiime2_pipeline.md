@@ -12,6 +12,7 @@
     -   [Bar plots](#bar-plots)
     -   [Exporting classifications and table](#exporting-classifications-and-table)
     -   [Krona plots](#krona-plots)
+    -   [PhyloSeq](#phyloseq)
 
 QIIME2
 ======
@@ -146,7 +147,7 @@ DADA2 analysis
 After the demultiplexing step, the quality control, 'ASV' selection, chimera checking and many other qulaity steps are done by the pipleline `DADA2` along with extracting the representative sequnces and building a table for the representatives. All of this is done by just one command:
 
 ``` bash
-qiime dada2 denoise-single --i-demultiplexed-seqs Amp_course_demux.qza --p-trim-left 20 --p-trunc-len 270 --p-n-threads 5 --o-representative-sequences Amp_course.rep-seqs-dada2.qza --o-table Amp_course.table-dada2.qza --o-denoising-stats dada2_stats.txt
+qiime dada2 denoise-single --i-demultiplexed-seqs Amp_course_demux.qza --p-trim-left 20 --p-trunc-len 245 --p-n-threads 5 --o-representative-sequences Amp_course.rep-seqs-dada2.qza --o-table Amp_course.table-dada2.qza --o-denoising-stats dada2_stats.txt
 ```
 
 Note that the `--p-trim-left 20` is to remove the forward primer and `--p-trunc-len` is to remove the reverse primer and also based on how the quality of the sequences looked like from the previous step. `Amp_course.rep-seqs-dada2.qza` contains the representative sequences and `Amp_course.table-dada2.qza` contains their respective abundance.
@@ -212,7 +213,7 @@ Here, we would combine the taxonomy classifications and the abundance table from
 
 ``` bash
 
-biom convert -i All_Asg-table.biom -o Amp_course.table-dada2.tab --to-tsv
+biom convert -i feature-table.biom -o Amp_course.table-dada2.tab --to-tsv
 
 mkdir txt_files
 cd txt_files
@@ -225,3 +226,22 @@ The above `biom` command will create a normal ASV abundance table. then, we comb
 ``` bash
 ktImportText txt_files/* -o Amp_course_silva132_krona.html
 ```
+
+PhyloSeq
+--------
+
+Now let's move on to making some prettier plots!! By which I mean making stacked bar plots ;)
+
+For this we need to convert the `taxonomy.tsv` and `Amp_course.table-dada2.tab` files to a format that the phyloseq can understand!
+
+``` bash
+
+tsv_to_phyloseq.py taxonomy.tsv phyloseq_taxa.tsv
+perl -pe 's/\#OTU/OTU/' Amp_course.table-dada2.tab > phyloseq_otu.tsv
+```
+
+Please run the following commands in R studio!!
+
+here you should be able to see more nicer plots than the previous one! In Phyloseq we can also go a bit more deep into look to only particular groups and so on.
+
+We can also subset samples!
