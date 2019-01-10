@@ -242,6 +242,46 @@ perl -pe 's/\#OTU/OTU/' Amp_course.table-dada2.tab > phyloseq_otu.tsv
 
 Please run the following commands in R studio!!
 
+``` r
+library("phyloseq")
+library("ggplot2")
+otumat <- as.matrix(read.table("phyloseq_otu.tsv",row.names = 1,header = T,sep = "\t"))
+taxmat <- as.matrix(read.table("phyloseq_taxa.tsv",row.names = 1,header = T,sep = "\t"))
+metamat <- as.data.frame(read.table("metadata_phyloseq.txt",row.names = 1,header = T,sep = "\t"))
+# Normal abundance
+OTU = otu_table(otumat, taxa_are_rows = TRUE)
+# Relative abundance
+OTUr = transform_sample_counts(OTU, function(x) x*100/sum(x))
+
+TAX = tax_table(taxmat)
+
+META = sample_data(metamat)
+physeq = phyloseq(OTU, TAX, META)
+physeq_r = phyloseq(OTUr, TAX, META)
+arc = subset_taxa(physeq, kingdom == "Archaea")
+arc_r = subset_taxa(physeq_r, kingdom == "Archaea")
+
+plot_bar(arc,fill = "phylum",x="SampleID", title = "Archaeal abundance")
+plot_bar(arc_r,fill = "phylum",x="SampleID", title = "Archaeal relative abundance")
+```
+
 here you should be able to see more nicer plots than the previous one! In Phyloseq we can also go a bit more deep into look to only particular groups and so on.
 
+``` r
+thaum_r = subset_taxa(physeq_r, phylum == "Thaumarchaeota")
+plot_bar(thaum_r,fill = "class",x="SampleID", title = "Thaumi abundance")
+```
+
 We can also subset samples!
+
+``` r
+Enr = subset_samples(physeq_r, Project == "Enrichment")
+Enr_thaum = subset_taxa(Enr, phylum == "Thaumarchaeota")
+plot_bar(Enr_thaum,fill = "class",x="Description", title = "Thaum relative abundance in Enrichment")
+```
+
+``` r
+Bio = subset_samples(physeq_r, Project == "Bioreactor")
+Bio_eury = subset_taxa(Bio, phylum == "Euryarchaeota")
+plot_bar(Bio_eury,fill = "class",x="Description", title = "Euryarchaeota relative abundance in Bioreactor")
+```
