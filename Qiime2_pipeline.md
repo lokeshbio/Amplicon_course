@@ -31,6 +31,15 @@ source activate qiime2
 GitHub files information
 ------------------------
 
+All the files related to this course are in my github page under the repository "Amplicon\_course"
+
+You can download all the files that are in there using the following command.
+
+``` bash
+
+git clone https://github.com/lokeshbio/Amplicon_course.git
+```
+
 Importing sequence files
 ------------------------
 
