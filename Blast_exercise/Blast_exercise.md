@@ -32,7 +32,7 @@ it is exactly the same as above, but with important changes!
 
 ``` bash
 
-makeblastdb -in protein_db.faa -dbtype prot -title protein_database_in_course -out Protein_db
+makeblastdb -in protein_db.faa -dbtype prot -title protein_database_in_course -out protein_db
 ```
 
 You will notice that similar to the previous command 3 files with extensions `.phr`, `.pin` and `.psq` will be made. This is an indication for you, if a certain database is `proteins` or `nucleotides`.
@@ -50,7 +50,7 @@ The three main blast commands that are very commonly used `blastn`, `blastp` and
 
 ``` bash
 
-blastn -db nucleotide_db -query nucleotide_query.fna -out Nuc_vs_Nuc.blastn -evalue 1E-10 -num_alignments 5 -num_alignments 2 -num_descriptions 10
+blastn -db nucleotide_db -query nucleotide_query.fna -out Nuc_vs_Nuc.blastn -evalue 1E-10 -num_alignments 5 -num_descriptions 10
 ```
 
 Notice hear that we only have to put `nucleotide_db` for the database without their file extension as the program will automatically look for the three related files.
@@ -69,7 +69,7 @@ To get output in the tabular format:
 
 ``` bash
 
-blastx -db protein_db -query nucleotide_query.fna -out Nuc_vs_Prot.tsv -evalue 1E-10 -num_alignments 5 -num_alignments 2 -num_descriptions 10 -outfmt 6
+blastx -db protein_db -query nucleotide_query.fna -out Nuc_vs_Prot.tsv -evalue 1E-10 -num_alignments 5 -num_descriptions 10 -outfmt 6
 ```
 
 Main exercise
