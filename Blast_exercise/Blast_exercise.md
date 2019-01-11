@@ -79,4 +79,4 @@ Try to see the if the e-value remains the same for all the matches when you do a
 
 When you look at the score and the E-value for a same match in two different blast runs, what would remain the same and what would change? And why so?
 
-Which of these blast programs do you think is the slowest and why?
+Which of these blast programs do you think is the fastest for sequences of same nucleotide and protein length with the similar databases and why?
