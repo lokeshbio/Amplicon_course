@@ -272,15 +272,15 @@ physeq_r = phyloseq(OTUr, TAX, META)
 arc = subset_taxa(physeq, kingdom == "Archaea")
 arc_r = subset_taxa(physeq_r, kingdom == "Archaea")
 
-plot_bar(arc,fill = "phylum",x="SampleID", title = "Archaeal abundance")
-plot_bar(arc_r,fill = "phylum",x="SampleID", title = "Archaeal relative abundance")
+plot_bar(arc,fill = "phylum",x="Description", title = "Archaeal abundance")
+plot_bar(arc_r,fill = "phylum",x="Description", title = "Archaeal relative abundance")
 ```
 
 here you should be able to see more nicer plots than the previous one! In Phyloseq we can also go a bit more deep into look to only particular groups and so on.
 
 ``` r
 thaum_r = subset_taxa(physeq_r, phylum == "Thaumarchaeota")
-plot_bar(thaum_r,fill = "class",x="SampleID", title = "Thaumi abundance")
+plot_bar(thaum_r,fill = "class",x="Description", title = "Thaumi abundance")
 ```
 
 We can also subset samples!
