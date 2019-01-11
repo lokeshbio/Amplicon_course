@@ -228,7 +228,7 @@ biom convert -i feature-table.biom -o Amp_course.table-dada2.tab --to-tsv
 
 mkdir txt_files
 cd txt_files
-../krona_qiime.py ../taxonomy.tsv ../Amp_course.table-dada2.tab
+../../krona_qiime.py ../taxonomy.tsv ../Amp_course.table-dada2.tab
 cd ..
 ```
 
