@@ -37,9 +37,20 @@ All the files related to this course are in my github page under the repository 
 You can download all the files that are in there using the following command.
 
 ``` bash
-
 git clone https://github.com/lokeshbio/Amplicon_course.git
 ```
+
+In here, you can see that I have 3 different directories with the files necessary for each of the exercise. For the sake of the course and it's simplicity, we will work on the 16S amplicons. If I forgot to explain why 16S in this case is simpler than amoA, SCREAM AT ME!!!
+
+``` bash
+cd 16S_related
+fastqc sample1.fastq.gz
+```
+
+`open the html file in a browser` to see the results
+
+Now we have run `fastqc` which basically tells you how the sequencing has been done for this sample and also the sequence processing it has went through! As you might notice that there is almost no Adaptors for example! This is because these samples have been already processed for their quality and trimming and so on.
+
 
 Importing sequence files
 ------------------------
