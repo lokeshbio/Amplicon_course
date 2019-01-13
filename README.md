@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 Welcome to the amplicon sequencing course!!!
 
 
  ________________________________________
+=======
+## Welcome to the amplicon sequencing course!!!
+
+```bash
+________________________________________
+>>>>>>> eecd2ecea41e7c916b7c4fe738d3a4a7e6289d23
 / This is the first age that's paid much \
 | attention to the future, which is a    |
 | little ironic since we may not have    |
@@ -15,3 +22,7 @@ Welcome to the amplicon sequencing course!!!
                 ||----w |
                 ||     ||
 
+<<<<<<< HEAD
+=======
+```
+>>>>>>> eecd2ecea41e7c916b7c4fe738d3a4a7e6289d23

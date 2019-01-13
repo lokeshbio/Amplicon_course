@@ -37,9 +37,20 @@ All the files related to this course are in my github page under the repository 
 You can download all the files that are in there using the following command.
 
 ``` bash
-
 git clone https://github.com/lokeshbio/Amplicon_course.git
 ```
+
+In here, you can see that I have 3 different directories with the files necessary for each of the exercise. For the sake of the course and it's simplicity, we will work on the 16S amplicons. If I forgot to explain why 16S in this case is simpler than amoA, SCREAM AT ME!!!
+
+``` bash
+cd 16S_related
+fastqc sample1.fastq.gz
+```
+
+`open the html file in a browser` to see the results
+
+Now we have run `fastqc` which basically tells you how the sequencing has been done for this sample and also the sequence processing it has went through! As you might notice that there is almost no Adaptors for example! This is because these samples have been already processed for their quality and trimming and so on.
+
 
 Importing sequence files
 ------------------------
@@ -217,7 +228,7 @@ biom convert -i feature-table.biom -o Amp_course.table-dada2.tab --to-tsv
 
 mkdir txt_files
 cd txt_files
-../krona_qiime.py ../taxonomy.tsv ../Amp_course.table-dada2.tab
+../../krona_qiime.py ../taxonomy.tsv ../Amp_course.table-dada2.tab
 cd ..
 ```
 
@@ -261,15 +272,15 @@ physeq_r = phyloseq(OTUr, TAX, META)
 arc = subset_taxa(physeq, kingdom == "Archaea")
 arc_r = subset_taxa(physeq_r, kingdom == "Archaea")
 
-plot_bar(arc,fill = "phylum",x="SampleID", title = "Archaeal abundance")
-plot_bar(arc_r,fill = "phylum",x="SampleID", title = "Archaeal relative abundance")
+plot_bar(arc,fill = "phylum",x="Description", title = "Archaeal abundance")
+plot_bar(arc_r,fill = "phylum",x="Description", title = "Archaeal relative abundance")
 ```
 
 here you should be able to see more nicer plots than the previous one! In Phyloseq we can also go a bit more deep into look to only particular groups and so on.
 
 ``` r
 thaum_r = subset_taxa(physeq_r, phylum == "Thaumarchaeota")
-plot_bar(thaum_r,fill = "class",x="SampleID", title = "Thaumi abundance")
+plot_bar(thaum_r,fill = "class",x="Description", title = "Thaumi abundance")
 ```
 
 We can also subset samples!
