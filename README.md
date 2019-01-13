@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-Welcome to the amplicon sequencing course!!!
 
-
- ________________________________________
-=======
 ## Welcome to the amplicon sequencing course!!!
 
 ```bash
@@ -22,7 +17,3 @@ ________________________________________
                 ||----w |
                 ||     ||
 
-<<<<<<< HEAD
-=======
-```
->>>>>>> eecd2ecea41e7c916b7c4fe738d3a4a7e6289d23
