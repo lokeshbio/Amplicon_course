@@ -1,4 +1,4 @@
-Amoa.sample-id,absolute-filepath,direction
+sample-id,absolute-filepath,direction
 Sample1,$PWD/Amoa.sample1.fastq.gz,reverse
 Sample2,$PWD/Amoa.sample2.fastq.gz,reverse
 Sample3,$PWD/Amoa.sample3.fastq.gz,reverse
