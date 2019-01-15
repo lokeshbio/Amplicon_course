@@ -296,3 +296,161 @@ Bio = subset_samples(physeq_r, Project == "Bioreactor")
 Bio_eury = subset_taxa(Bio, phylum == "Euryarchaeota")
 plot_bar(Bio_eury,fill = "class",x="Description", title = "Euryarchaeota relative abundance in Bioreactor")
 ```
+
+Bubble plot
+-----------
+
+The following is an R code that was mainly written by Alex and modified for the course Tobias! This is quite a good example of using different R packages to make a very good biologically meaningful plots! 
+
+``` r
+library("reshape2")
+library("stringr")
+library("ggplot2")
+library("RColorBrewer")
+
+tax_aggr <- "family" # Taxonomic level to plot
+tax_col <- "phylum" # Taxonomic level to colour the dots
+replicates_list <- c("Sample1", "Sample2", "Sample3", "Sample4", "Sample5") # sample names
+tax_number <- 50 # Number of taxa to plot
+plot_dim <- c(6,6) # dimensions of plot
+file_name <- "bubble_plot.svg" # filename for plot
+
+
+otu_tab_file <- "phyloseq_otu.tsv" # input file
+tax_file <- "phyloseq_taxa.tsv" # input file
+
+
+replicates_groups <- replicates_list
+otu_tab <- read.table(otu_tab_file, header = TRUE, comment.char = "#", sep = "\t")
+names(otu_tab)[1] <- "OTU"
+tax_tab <- read.table(tax_file, header = TRUE, comment.char = "#", sep = "\t", fill = TRUE)
+names(tax_tab)[1] <- "OTU"
+# Change all cells containing 'uncultured' or 'unkown' to unassigned + higher taxonomic level
+for (col in 2:ncol(tax_tab)) {
+  for (row in 1:nrow(tax_tab)) {
+    if (grepl("uncultured",tax_tab[row,col],ignore.case = TRUE)) {
+      tax_tab[row,col] <- ""
+    }
+    if (grepl("unknown",tax_tab[row,col],ignore.case = TRUE)) {
+      tax_tab[row,col] <- ""
+    }
+  }
+}
+
+# Replace empty cells by 'NA'
+tax_tab2 <- as.data.frame(apply(tax_tab, 2, function(x) gsub("^$|^ $", NA, x)))
+col_to_remove <- c()
+for (col in 2:ncol(tax_tab2)) {
+  x <- sum(is.na(tax_tab2[,col]))/nrow(tax_tab2)
+  if (x == 1) {
+    col_to_remove <- c(col_to_remove, col)
+  }
+}
+if (length(col_to_remove) > 0) {
+  tax_tab3 <- tax_tab2[,-col_to_remove]
+} else {
+  tax_tab3 <- tax_tab2
+}
+for (col in 2:ncol(tax_tab3)) {
+  tax_tab3[,col] <- as.character(tax_tab3[,col])
+}
+for (col in 1:ncol(tax_tab3)) {
+  for (row in 1:nrow(tax_tab3)) {
+    if (is.na(tax_tab3[row,col])) {
+      if (!grepl("OTU", tax_tab3[row,col-1]) & !grepl("unassigned", tax_tab3[row,col-1])) {
+        tax_tab3[row,col] <- paste0("unassigned ", tax_tab3[row,col-1])
+      } else {
+        tax_tab3[row,col] <- tax_tab3[row,col-1]
+      }
+    }
+  }
+}
+
+otu_counts <- colSums(otu_tab[,-1])
+otu_tab2 <- otu_tab
+otu_tab2[,-1] <- sweep(otu_tab[,-1], 2, otu_counts, `/`)
+otu_tab2[is.na(otu_tab2)] <- 0
+
+m <- merge(otu_tab2, tax_tab3)
+
+taxonomy <- c()
+for (row in 1:nrow(m)) {
+  taxonomy <- c(taxonomy, paste0(m[row,names(m)==tax_col], ";", m[row,names(m)==tax_aggr]))
+}
+
+m2 <- m[,names(m) %in% replicates_list]
+
+m3 <- aggregate(m2, by=list(taxonomy), FUN=sum)
+
+if (tax_number > nrow(m3)) {
+  tax_number <- nrow(m3)
+}
+
+m3$average <- rowMeans(m3[,-1])
+m3.sorted <- m3[order(-m3$average),]
+
+m3.sorted$selection <- rep("discarded", nrow(m3.sorted))
+m3.sorted$selection[1:tax_number] <- "retained"
+m3.sorted$Group.1[m3.sorted$selection == "discarded"] <- "Other;Other"
+m3.sorted$average <- NULL
+m3.sorted$selection <- NULL
+m4 <- aggregate(m3.sorted[,-1], by=list(taxonomy=m3.sorted$Group.1), FUN=sum)
+
+n <- m4$taxonomy
+m4.t <- as.data.frame(t(m4[,-1]))
+colnames(m4.t) <- n
+m4.t$sample <- rownames(m4.t)
+rownames(m4.t) <- NULL
+
+m4.t$replicate <- rep(NA, nrow(m4.t))
+for (line in 1:(nrow(m4.t))){
+  m4.t$replicate[line] <- replicates_groups[m4.t$sample[line] == replicates_list]
+}
+
+m4.t.mean <- aggregate(m4.t[,1:(ncol(m4.t)-2)],
+                       by = list(m4.t$replicate),
+                       FUN = "mean")
+names(m4.t.mean)[1] <- "sample"
+
+m4.t.sd <- aggregate(m4.t[,1:(ncol(m4.t)-2)],
+                     by = list(m4.t$replicate),
+                     FUN = "sd")
+names(m4.t.sd)[1] <- "sample"
+
+molten.mean <- melt(m4.t.mean, id.vars = "sample")
+molten.mean$id <- paste0(molten.mean$sample, "-", molten.mean$variable)
+molten.sd <- melt(m4.t.sd, id.vars = "sample")
+molten.sd$id <- paste0(molten.sd$sample, "-", molten.sd$variable)
+molten <- merge(molten.mean, molten.sd, by.x = "id", by.y = "id")
+molten$id <- NULL
+molten$sample.y <- NULL
+molten$variable.y <- NULL
+names(molten) <- c("sample", "taxonomy", "mean", "sd")
+
+molten$tax_col <- str_split_fixed(molten$taxonomy, ";", 2)[,1]
+molten$tax_bin <- str_split_fixed(molten$taxonomy, ";", 2)[,2]
+molten <- molten[order(molten$tax_col),]
+tax_levels <- as.character(molten$tax_bin[!duplicated(molten$tax_bin)])
+tax_levels <- tax_levels[tax_levels != "Other"]
+tax_levels <- c(tax_levels, "Other")
+molten$tax_bin <- factor(molten$tax_bin, levels = rev(tax_levels))
+molten$tax_bin <- factor(molten$tax_bin)
+molten2 <- molten[molten$mean > 0,]
+bubble_plot <- ggplot(molten2,aes(sample,tax_bin)) +
+  #geom_point(aes(size=mean+sd), shape=16, color = "red") + 
+  geom_point(aes(size=mean, fill=molten2$tax_col),shape=21,color="black") +
+  theme(panel.grid.major=element_line(linetype=1,color="grey"),
+        axis.text.x=element_text(angle=90,hjust=1,vjust=0),
+        panel.background = element_blank()) +
+  ylab("Taxnomic bins") +
+  xlab("Samples") +
+  #scale_fill_brewer(palette="Paired", name="Taxonomic\nclade") +
+  scale_fill_discrete(name="Taxonomic\nclade") +
+  #scale_fill_manual(values= c("maroon2", "pink", "#000000"), name="Taxonomic\nclade") +
+  scale_size(name = "Relative\nabundance")
+
+#svg(file_name, width = plot_dim[1], height = plot_dim[2])
+bubble_plot
+#dev.off()
+
+```
