@@ -11,9 +11,11 @@
     -   [Taxonomic classifications](#taxonomic-classifications)
     -   [Bar plots](#bar-plots)
     -   [Exporting classifications and table](#exporting-classifications-and-table)
+-   [Plots](#plots)
     -   [Krona plots](#krona-plots)
     -   [PhyloSeq](#phyloseq)
-
+    -   [Bubble plot](#bubble-plot)
+    
 QIIME2
 ======
 
@@ -204,6 +206,12 @@ qiime tools export --input-path Amp_course.table-dada2.qza --output-path .
 ```
 
 The classfication table has a name `taxonomy.tsv` as an output with taxonomy for each ASV and the table output is in biom format!
+
+Plots
+=====
+
+In this section, we will look into the different tools we can use to make interesting and meaningful plots!
+
 
 Krona plots
 -----------
